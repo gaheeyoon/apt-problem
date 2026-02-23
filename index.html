@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의왕시청역 풍경채 어바니티 | 하자점검 현황 대시보드</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-card-hover: #22222e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+            --accent-red: #ff4757;
+            --accent-orange: #ff8c42;
+            --accent-yellow: #ffd93d;
+            --accent-green: #2ed573;
+            --accent-blue: #3498db;
+            --accent-purple: #9b59b6;
+            --border-color: rgba(255,255,255,0.08);
+            --gradient-red: linear-gradient(135deg, #ff4757 0%, #ff6b7a 100%);
+            --gradient-orange: linear-gradient(135deg, #ff8c42 0%, #ffb366 100%);
+            --gradient-blue: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+            --gradient-green: linear-gradient(135deg, #2ed573 0%, #7bed9f 100%);
+            --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 40px rgba(255,71,87,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .bg-pattern::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255,71,87,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(52,152,219,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 40% 60%, rgba(155,89,182,0.05) 0%, transparent 30%);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 40px 60px;
+            background: linear-gradient(180deg, rgba(10,10,15,0.95) 0%, transparent 100%);
+        }
+
+        .header-content {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .logo-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fff 0%, #a0a0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-section p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 8px;
+            font-weight: 400;
+        }
+
+        .header-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: rgba(255,71,87,0.1);
+            border: 1px solid rgba(255,71,87,0.3);
+            border-radius: 50px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,71,87,0.3); }
+            50% { box-shadow: 0 0 20px 5px rgba(255,71,87,0.2); }
+        }
+
+        .badge-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .header-badge span {
+            color: var(--accent-red);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .survey-info {
+            display: flex;
+            gap: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+
+        .info-item span {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 60px 60px;
+        }
+
+        /* Key Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .metric-card.red::before { background: var(--gradient-red); }
+        .metric-card.orange::before { background: var(--gradient-orange); }
+        .metric-card.blue::before { background: var(--gradient-blue); }
+        .metric-card.green::before { background: var(--gradient-green); }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .metric-card.red .metric-value { color: var(--accent-red); }
+        .metric-card.orange .metric-value { color: var(--accent-orange); }
+        .metric-card.blue .metric-value { color: var(--accent-blue); }
+        .metric-card.green .metric-value { color: var(--accent-green); }
+
+        .metric-detail {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .metric-icon {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            opacity: 0.1;
+        }
+
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 50px 0 24px;
+        }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-title .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Progress Bars */
+        .progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .progress-item {
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .progress-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-red);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--gradient-red);
+        }
+
+        /* Word Cloud */
+        .wordcloud-container {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #wordcloud {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Three Column Grid */
+        .three-col-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Comments Section */
+        .comments-slider {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        .comments-track {
+            display: flex;
+            gap: 24px;
+            animation: slideComments 40s linear infinite;
+        }
+
+        .comments-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes slideComments {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .comment-card {
+            flex-shrink: 0;
+            width: 400px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .comment-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(255,71,87,0.3);
+        }
+
+        .comment-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,71,87,0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .comment-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent-red);
+        }
+
+        .comment-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        /* Dong Detail Table */
+        .table-card {
+            overflow: hidden;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+
+        .data-table .dong-name {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .data-table .rate-cell {
+            font-weight: 700;
+        }
+
+        .rate-low { color: var(--accent-red); }
+        .rate-mid { color: var(--accent-orange); }
+        .rate-high { color: var(--accent-green); }
+
+        /* Summary Stats */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(255,71,87,0.1) 0%, rgba(155,89,182,0.1) 100%);
+            border: 1px solid rgba(255,71,87,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 40px;
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title svg {
+            color: var(--accent-red);
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            margin-bottom: 4px;
+        }
+
+        .summary-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px 60px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .three-col-grid { grid-template-columns: 1fr; }
+            .summary-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            header, main { padding-left: 24px; padding-right: 24px; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .metric-value { font-size: 2.5rem; }
+            .logo-section h1 { font-size: 1.8rem; }
+            .survey-info { flex-direction: column; gap: 16px; }
+            .header-top { flex-direction: column; gap: 20px; }
+            .comment-card { width: 300px; }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <header>
+        <div class="header-content">
+            <div class="header-top">
+                <div class="logo-section">
+                    <h1>의왕시청역 풍경채 어바니티</h1>
+                    <p>사전점검 하자보수 현황 대시보드</p>
+                </div>
+                <div class="header-badge">
+                    <div class="badge-dot"></div>
+                    <span>하자보수 미흡 현황</span>
+                </div>
+            </div>
+            <div class="survey-info">
+                <div class="info-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>조사일: 2026년 2월 23일</span>
+                </div>
+                <div class="info-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>응답 세대: 87세대</span>
+                </div>
+                <div class="info-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <span>대상: 101~108동</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card red fade-in delay-1">
+                <div class="metric-label">총 하자 접수</div>
+                <div class="metric-value" id="totalInitial">0</div>
+                <div class="metric-detail">사전점검 당시 접수 건수</div>
+                <svg class="metric-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 2a1 1 0 000 2h2v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-6V4h2a1 1 0 100-2H9z"/>
+                </svg>
+            </div>
+            <div class="metric-card orange fade-in delay-2">
+                <div class="metric-label">보수 완료</div>
+                <div class="metric-value" id="totalCompleted">0</div>
+                <div class="metric-detail">완료 처리된 하자 건수</div>
+                <svg class="metric-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="metric-card blue fade-in delay-3">
+                <div class="metric-label">보수율</div>
+                <div class="metric-value" id="repairRate">0%</div>
+                <div class="metric-detail">전체 접수 대비 완료율</div>
+                <svg class="metric-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                </svg>
+            </div>
+            <div class="metric-card green fade-in delay-4">
+                <div class="metric-label">재접수 건수</div>
+                <div class="metric-value" id="totalResubmit">0</div>
+                <div class="metric-detail">보수 불량으로 재접수</div>
+                <svg class="metric-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="section-title fade-in delay-5">
+            <h2>동별 보수 현황</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div class="charts-grid fade-in delay-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">동별 하자 보수율 비교</div>
+                        <div class="chart-subtitle">접수 건수 대비 보수 완료율</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="dongChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">동별 보수율 순위</div>
+                        <div class="chart-subtitle">낮은 순 정렬</div>
+                    </div>
+                </div>
+                <div class="progress-list" id="dongRanking"></div>
+            </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="section-title">
+            <h2>하자 심각도 및 유형 분석</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="three-col-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">하자 심각도 분포</div>
+                        <div class="chart-subtitle">응답자 평가 기준</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">미보수 하자 유형</div>
+                        <div class="chart-subtitle">가장 심각한 미처리 하자</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="unrepairedChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">보수 품질 불만족</div>
+                        <div class="chart-subtitle">완료되었으나 품질 미흡</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="qualityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row 3 -->
+        <div class="section-title">
+            <h2>중대 하자 발생 공간 분석</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">중대 하자 발생 공간</div>
+                        <div class="chart-subtitle">공간별 중대 하자 빈도</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="spaceChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">세부 공종별 하자</div>
+                        <div class="chart-subtitle">거실·안방·침실 기준</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="defectTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Cloud -->
+        <div class="section-title">
+            <h2>입주민 의견 키워드</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">주요 키워드 분석</div>
+                    <div class="chart-subtitle">자유 의견 텍스트에서 추출된 핵심 키워드</div>
+                </div>
+            </div>
+            <div class="wordcloud-container">
+                <svg id="wordcloud"></svg>
+            </div>
+        </div>
+
+        <!-- Comments Slider -->
+        <div class="section-title">
+            <h2>입주민 생생한 목소리</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="comments-slider">
+            <div class="comments-track" id="commentsTrack"></div>
+        </div>
+
+        <!-- Dong Detail Table -->
+        <div class="section-title">
+            <h2>동별 상세 현황</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="chart-card table-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>동</th>
+                        <th>응답 세대</th>
+                        <th>접수 건수</th>
+                        <th>완료 건수</th>
+                        <th>미완료</th>
+                        <th>재접수</th>
+                        <th>보수율</th>
+                    </tr>
+                </thead>
+                <tbody id="dongTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-box">
+            <div class="summary-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                핵심 문제점 요약
+            </div>
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-value">38.6%</div>
+                    <div class="summary-stat-label">미보수율<br>(3,232건 미처리)</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value">95.4%</div>
+                    <div class="summary-stat-label">품질 불만족<br>(83세대 불만)</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value">88.5%</div>
+                    <div class="summary-stat-label">창호/샷시 하자<br>(77건 미처리)</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value">69%</div>
+                    <div class="summary-stat-label">심각 이상 평가<br>(60세대)</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>의왕시청역 풍경채 어바니티 입주예정자협의회 · 설문조사 기반 데이터 분석</p>
+    </footer>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Dashboard Data
+        const dashboardData = {
+            summary: {
+                totalResponses: 87,
+                totalInitial: 8380,
+                totalCompleted: 5148,
+                totalResubmit: 2509,
+                repairRate: 61.4,
+                avgInitial: 96.3,
+                avgCompleted: 59.2,
+                avgResubmit: 28.8
+            },
+            byDong: [
+                { dong: "101", responses: 8, initial: 795, completed: 398, resubmit: 341, repairRate: 50.1, unrepaired: 397 },
+                { dong: "102", responses: 11, initial: 1269, completed: 870, resubmit: 373, repairRate: 68.6, unrepaired: 399 },
+                { dong: "103", responses: 8, initial: 736, completed: 446, resubmit: 98, repairRate: 60.6, unrepaired: 290 },
+                { dong: "104", responses: 6, initial: 522, completed: 370, resubmit: 150, repairRate: 70.9, unrepaired: 152 },
+                { dong: "105", responses: 15, initial: 1382, completed: 810, resubmit: 540, repairRate: 58.6, unrepaired: 572 },
+                { dong: "106", responses: 7, initial: 670, completed: 380, resubmit: 188, repairRate: 56.7, unrepaired: 290 },
+                { dong: "107", responses: 17, initial: 1698, completed: 1163, resubmit: 511, repairRate: 68.5, unrepaired: 535 },
+                { dong: "108", responses: 15, initial: 1308, completed: 711, resubmit: 308, repairRate: 54.4, unrepaired: 597 }
+            ],
+            severity: [
+                { level: "심각 (생활에 상당한 불편)", count: 48, percent: 55.2 },
+                { level: "보통 (불편하지만 생활 가능)", count: 22, percent: 25.3 },
+                { level: "매우 심각 (일상생활 불가 수준)", count: 12, percent: 13.8 },
+                { level: "경미 (사소한 수준)", count: 5, percent: 5.7 }
+            ],
+            qualityDissatisfied: [
+                { type: "다수 있음 (11건 이상)", count: 48, percent: 55.2 },
+                { type: "일부 있음 (1~10건)", count: 35, percent: 40.2 },
+                { type: "없음", count: 4, percent: 4.6 }
+            ],
+            unrepairedTypes: [
+                { type: "창호/샷시 불량", count: 77 },
+                { type: "도배/마감 불량", count: 53 },
+                { type: "누수/배관 문제", count: 24 },
+                { type: "바닥재 불량", count: 21 },
+                { type: "설비 불량", count: 10 }
+            ],
+            majorSpaces: [
+                { space: "거실", count: 67 },
+                { space: "침실2", count: 52 },
+                { space: "안방", count: 50 },
+                { space: "침실1", count: 49 },
+                { space: "욕실1", count: 38 },
+                { space: "욕실2", count: 29 },
+                { space: "주방", count: 28 },
+                { space: "현관", count: 17 },
+                { space: "드레스룸", count: 12 },
+                { space: "다용도실", count: 12 }
+            ],
+            roomDefects: [
+                { defect: "PL창호", count: 72 },
+                { defect: "도배", count: 21 },
+                { defect: "목문틀", count: 17 },
+                { defect: "강마루", count: 14 },
+                { defect: "미장", count: 13 },
+                { defect: "목문짝", count: 12 },
+                { defect: "외벽도장", count: 11 },
+                { defect: "발코니난간대", count: 8 },
+                { defect: "골조", count: 8 },
+                { defect: "석고보드", count: 7 }
+            ],
+            wordCloudData: [
+                { text: "샷시", value: 36 }, { text: "흔들림", value: 25 }, { text: "불량", value: 20 },
+                { text: "욕실", value: 18 }, { text: "하자", value: 18 }, { text: "창호", value: 15 },
+                { text: "마감", value: 14 }, { text: "들뜸", value: 11 }, { text: "세면대", value: 10 },
+                { text: "타일", value: 10 }, { text: "창틀", value: 8 }, { text: "안방", value: 8 },
+                { text: "보수", value: 7 }, { text: "도배", value: 6 }, { text: "배관", value: 6 },
+                { text: "침실", value: 6 }, { text: "제대로", value: 6 }, { text: "강마루", value: 5 },
+                { text: "아일랜드장", value: 5 }, { text: "구배불량", value: 5 }, { text: "창문", value: 5 },
+                { text: "사전점검", value: 5 }, { text: "입주", value: 5 }, { text: "현관", value: 4 },
+                { text: "미고정", value: 4 }, { text: "화장실", value: 4 }, { text: "거실", value: 4 },
+                { text: "수평", value: 4 }, { text: "누수", value: 3 }, { text: "고정", value: 3 },
+                { text: "상판", value: 3 }, { text: "크랙", value: 3 }, { text: "마루", value: 3 }
+            ],
+            comments: [
+                "샷시 흔들림, 욕실 세면대 뒤쪽 미장이 온전하지 않아 누수 우려됨, 바닥 강마루 들뜸",
+                "샷시 흔들림 수리하였으나 마감불량, 도배 뜸, 각종 실리콘 마감미흡",
+                "현관 공용부 도장 불량, 샷시 전체 흔들림, 도배 들뜸",
+                "창호 고정 안됨, 욕실 배관 마감처리 불량, 전체적인 도배마감 불량",
+                "창호 하나도 보완 안되었어요",
+                "주방상판 미고정, 아일랜드장 상판 미고정 및 아일랜드장 흔들림, 샷시 흔들림",
+                "전체적인 샷시 문제, 배수문제",
+                "창호 흔들림, 도배 흠집, 스크레치, 수전기기 마감미흡, 아일랜드장 하부 다이 미고정",
+                "아일랜드 상판 대칭 안맞거나 깨진 유리, 깨진 타일",
+                "모든 창호가 불량시공 되었습니다",
+                "전체적으로 폼이 덜 충전 되어서 샷시가 흔들리는 부분",
+                "창틀 흔들림, 싱크대 상판 고정 안됨, 아일랜드장 고정 안됨",
+                "창호 흔들림, 욕실 구배(물고임)",
+                "샤시창호 문틀 흔들림이 심합니다, 현관문 개폐불량으로 인해 흔들림도 심함",
+                "침실 창틀 흔들림, 도배 불량, 욕실 천정재 미설치, 난방 안됨"
+            ]
+        };
+
+        // Animate numbers
+        function animateNumber(element, target, suffix = '') {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toLocaleString() + suffix;
+            }, 30);
+        }
+
+        // Initialize metrics
+        function initMetrics() {
+            animateNumber(document.getElementById('totalInitial'), dashboardData.summary.totalInitial);
+            animateNumber(document.getElementById('totalCompleted'), dashboardData.summary.totalCompleted);
+            animateNumber(document.getElementById('repairRate'), dashboardData.summary.repairRate, '%');
+            animateNumber(document.getElementById('totalResubmit'), dashboardData.summary.totalResubmit);
+        }
+
+        // Chart.js defaults
+        Chart.defaults.color = '#a0a0b0';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.08)';
+        Chart.defaults.font.family = "'Pretendard', 'Noto Sans KR', sans-serif";
+
+        // Dong Chart
+        function initDongChart() {
+            const ctx = document.getElementById('dongChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dashboardData.byDong.map(d => d.dong + '동'),
+                    datasets: [
+                        {
+                            label: '접수',
+                            data: dashboardData.byDong.map(d => d.initial),
+                            backgroundColor: 'rgba(255, 71, 87, 0.8)',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        },
+                        {
+                            label: '완료',
+                            data: dashboardData.byDong.map(d => d.completed),
+                            backgroundColor: 'rgba(46, 213, 115, 0.8)',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        },
+                        {
+                            label: '재접수',
+                            data: dashboardData.byDong.map(d => d.resubmit),
+                            backgroundColor: 'rgba(255, 140, 66, 0.8)',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { padding: 20, usePointStyle: true, pointStyle: 'circle' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dong Ranking
+        function initDongRanking() {
+            const container = document.getElementById('dongRanking');
+            const sorted = [...dashboardData.byDong].sort((a, b) => a.repairRate - b.repairRate);
+            
+            sorted.forEach((d, i) => {
+                const item = document.createElement('div');
+                item.className = 'progress-item';
+                item.innerHTML = `
+                    <div class="progress-header">
+                        <span class="progress-label">${d.dong}동</span>
+                        <span class="progress-value">${d.repairRate}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%; background: ${getColorByRate(d.repairRate)}"></div>
+                    </div>
+                `;
+                container.appendChild(item);
+                
+                setTimeout(() => {
+                    item.querySelector('.progress-fill').style.width = d.repairRate + '%';
+                }, 100 + i * 100);
+            });
+        }
+
+        function getColorByRate(rate) {
+            if (rate < 55) return 'linear-gradient(90deg, #ff4757, #ff6b7a)';
+            if (rate < 65) return 'linear-gradient(90deg, #ff8c42, #ffb366)';
+            return 'linear-gradient(90deg, #2ed573, #7bed9f)';
+        }
+
+        // Severity Chart
+        function initSeverityChart() {
+            const ctx = document.getElementById('severityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['매우 심각', '심각', '보통', '경미'],
+                    datasets: [{
+                        data: [12, 48, 22, 5],
+                        backgroundColor: ['#ff4757', '#ff8c42', '#ffd93d', '#2ed573'],
+                        borderWidth: 0,
+                        cutout: '65%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, usePointStyle: true, pointStyle: 'circle' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Unrepaired Types Chart
+        function initUnrepairedChart() {
+            const ctx = document.getElementById('unrepairedChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dashboardData.unrepairedTypes.map(d => d.type.replace('/', '\n')),
+                    datasets: [{
+                        data: dashboardData.unrepairedTypes.map(d => d.count),
+                        backgroundColor: ['#ff4757', '#ff6b81', '#ff8c99', '#ffa8b1', '#ffc4c9'],
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Quality Chart
+        function initQualityChart() {
+            const ctx = document.getElementById('qualityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['다수 불만족 (11건↑)', '일부 불만족 (1~10건)', '만족'],
+                    datasets: [{
+                        data: [48, 35, 4],
+                        backgroundColor: ['#ff4757', '#ff8c42', '#2ed573'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, usePointStyle: true, pointStyle: 'circle' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Space Chart
+        function initSpaceChart() {
+            const ctx = document.getElementById('spaceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dashboardData.majorSpaces.map(d => d.space),
+                    datasets: [{
+                        data: dashboardData.majorSpaces.map(d => d.count),
+                        backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Defect Type Chart
+        function initDefectTypeChart() {
+            const ctx = document.getElementById('defectTypeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dashboardData.roomDefects.map(d => d.defect),
+                    datasets: [{
+                        data: dashboardData.roomDefects.map(d => d.count),
+                        backgroundColor: 'rgba(155, 89, 182, 0.8)',
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Word Cloud
+        function initWordCloud() {
+            const width = document.getElementById('wordcloud').clientWidth || 800;
+            const height = 400;
+            
+            const svg = d3.select('#wordcloud')
+                .attr('width', width)
+                .attr('height', height);
+
+            const colors = ['#ff4757', '#ff8c42', '#ffd93d', '#3498db', '#9b59b6', '#2ed573', '#e84393', '#00cec9'];
+
+            const layout = d3.layout.cloud()
+                .size([width, height])
+                .words(dashboardData.wordCloudData.map(d => ({
+                    text: d.text,
+                    size: 14 + d.value * 2.5
+                })))
+                .padding(8)
+                .rotate(() => (Math.random() > 0.7 ? 90 : 0))
+                .font("'Pretendard', sans-serif")
+                .fontSize(d => d.size)
+                .on('end', draw);
+
+            layout.start();
+
+            function draw(words) {
+                svg.append('g')
+                    .attr('transform', `translate(${width/2},${height/2})`)
+                    .selectAll('text')
+                    .data(words)
+                    .enter().append('text')
+                    .style('font-size', d => d.size + 'px')
+                    .style('font-family', "'Pretendard', sans-serif")
+                    .style('font-weight', '600')
+                    .style('fill', (d, i) => colors[i % colors.length])
+                    .style('cursor', 'pointer')
+                    .style('opacity', 0)
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', d => `translate(${d.x},${d.y}) rotate(${d.rotate})`)
+                    .text(d => d.text)
+                    .transition()
+                    .duration(1000)
+                    .delay((d, i) => i * 30)
+                    .style('opacity', 1);
+            }
+        }
+
+        // Comments Slider
+        function initComments() {
+            const track = document.getElementById('commentsTrack');
+            const comments = [...dashboardData.comments, ...dashboardData.comments];
+            
+            comments.forEach(comment => {
+                const card = document.createElement('div');
+                card.className = 'comment-card';
+                card.innerHTML = `
+                    <div class="comment-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                    <p class="comment-text">${comment}</p>
+                `;
+                track.appendChild(card);
+            });
+        }
+
+        // Dong Table
+        function initDongTable() {
+            const tbody = document.getElementById('dongTableBody');
+            
+            dashboardData.byDong.forEach(d => {
+                const rateClass = d.repairRate < 55 ? 'rate-low' : d.repairRate < 65 ? 'rate-mid' : 'rate-high';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="dong-name">${d.dong}동</td>
+                    <td>${d.responses}세대</td>
+                    <td>${d.initial.toLocaleString()}건</td>
+                    <td>${d.completed.toLocaleString()}건</td>
+                    <td style="color: var(--accent-red)">${d.unrepaired.toLocaleString()}건</td>
+                    <td style="color: var(--accent-orange)">${d.resubmit.toLocaleString()}건</td>
+                    <td class="rate-cell ${rateClass}">${d.repairRate}%</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Initialize all
+        document.addEventListener('DOMContentLoaded', () => {
+            initMetrics();
+            initDongChart();
+            initDongRanking();
+            initSeverityChart();
+            initUnrepairedChart();
+            initQualityChart();
+            initSpaceChart();
+            initDefectTypeChart();
+            initWordCloud();
+            initComments();
+            initDongTable();
+        });
+    </script>
+</body>
+</html>
