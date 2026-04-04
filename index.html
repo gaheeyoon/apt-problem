@@ -724,7 +724,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span>응답 세대: 226세대</span>
+                    <span>응답 세대: 261세대</span>
                 </div>
                 <div class="meta-item">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -740,24 +740,24 @@
         <!-- Critical Banner -->
         <div class="critical-banner fade-in">
             <div class="critical-stat">
-                <div class="critical-stat-value">35.2%</div>
+                <div class="critical-stat-value">33.8%</div>
                 <div class="critical-stat-label">미보수율</div>
-                <div class="critical-stat-detail">7,397건이 아직도 미처리</div>
+                <div class="critical-stat-detail">8,159건이 아직도 미처리</div>
             </div>
             <div class="critical-stat warning">
-                <div class="critical-stat-value">41%</div>
+                <div class="critical-stat-value">43%</div>
                 <div class="critical-stat-label">재접수율</div>
                 <div class="critical-stat-detail">완료된 것도 다시 접수</div>
             </div>
             <div class="critical-stat">
                 <div class="critical-stat-value">96%</div>
                 <div class="critical-stat-label">품질 불만족</div>
-                <div class="critical-stat-detail">218세대가 불만족</div>
+                <div class="critical-stat-detail">251세대가 불만족</div>
             </div>
             <div class="critical-stat">
-                <div class="critical-stat-value">72%</div>
+                <div class="critical-stat-value">70%</div>
                 <div class="critical-stat-label">심각 이상 평가</div>
-                <div class="critical-stat-detail">162세대가 심각 평가</div>
+                <div class="critical-stat-detail">184세대가 심각 평가</div>
             </div>
         </div>
 
@@ -773,9 +773,9 @@
                 <!-- 창호/샷시 강조 카드 -->
                 <div class="card highlight-card">
                     <div class="window-emphasis">
-                        <div class="stat-value">192건</div>
+                        <div class="stat-value">219건</div>
                         <div class="stat-label">창호/샷시 불량</div>
-                        <div class="stat-detail">미보수 하자 중 압도적 1위 (85%)</div>
+                        <div class="stat-detail">미보수 하자 중 압도적 1위 (84%)</div>
                     </div>
                     <div style="padding-top: 20px; text-align: center;">
                         <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;">
@@ -819,7 +819,7 @@
         <div class="section fade-in delay-2">
             <div class="section-header">
                 <h2>⚠️ "고치는 시늉만" - 보수 품질 문제</h2>
-                <span class="section-badge">재접수 41%</span>
+                <span class="section-badge">재접수 43%</span>
                 <div class="section-line"></div>
             </div>
 
@@ -840,7 +840,7 @@
                     <div class="card-header">
                         <div>
                             <div class="card-title">하자 처리 현황</div>
-                            <div class="card-subtitle">재접수가 완료 건수의 41%</div>
+                            <div class="card-subtitle">재접수가 완료 건수의 43%</div>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -957,7 +957,7 @@
                     <div class="card-header">
                         <div>
                             <div class="card-title">동별 재접수율 순위</div>
-                            <div class="card-subtitle">101동 재접수율 53.9%로 최고</div>
+                            <div class="card-subtitle">105동 재접수율 59.1%로 최고</div>
                         </div>
                     </div>
                     <div class="progress-list" id="resubmitRanking"></div>
@@ -1000,19 +1000,19 @@
             </div>
             <div class="summary-grid">
                 <div class="summary-item">
-                    <div class="summary-item-value">7,397건</div>
-                    <div class="summary-item-label">아직 미처리된 하자<br>(전체의 35.2%)</div>
+                    <div class="summary-item-value">8,159건</div>
+                    <div class="summary-item-label">아직 미처리된 하자<br>(전체의 33.8%)</div>
                 </div>
                 <div class="summary-item">
-                    <div class="summary-item-value">5,648건</div>
-                    <div class="summary-item-label">재접수 건수<br>(완료의 41%가 불량)</div>
+                    <div class="summary-item-value">6,823건</div>
+                    <div class="summary-item-label">재접수 건수<br>(완료의 43%가 불량)</div>
                 </div>
                 <div class="summary-item">
-                    <div class="summary-item-value">192건</div>
+                    <div class="summary-item-value">219건</div>
                     <div class="summary-item-label">창호/샷시 불량<br>(미보수 1위)</div>
                 </div>
                 <div class="summary-item">
-                    <div class="summary-item-value">218세대</div>
+                    <div class="summary-item-value">251세대</div>
                     <div class="summary-item-label">품질 불만족<br>(전체의 96%)</div>
                 </div>
             </div>
@@ -1035,76 +1035,76 @@
         // Data
         const data = {
             severity: [
-                { level: '매우 심각', count: 41, color: '#c45858' },
-                { level: '심각', count: 121, color: '#e07070' },
-                { level: '보통', count: 56, color: '#e89050' },
+                { level: '매우 심각', count: 46, color: '#c45858' },
+                { level: '심각', count: 138, color: '#e07070' },
+                { level: '보통', count: 69, color: '#e89050' },
                 { level: '경미', count: 8, color: '#22a366' }
             ],
             unrepairedTypes: [
-                { type: '창호/샷시 불량', count: 192 },
-                { type: '도배/마감 불량', count: 136 },
-                { type: '누수/배관 문제', count: 55 },
-                { type: '바닥재 불량', count: 48 },
-                { type: '설비 불량', count: 26 }
+                { type: '창호/샷시 불량', count: 219 },
+                { type: '도배/마감 불량', count: 150 },
+                { type: '누수/배관 문제', count: 58 },
+                { type: '바닥재 불량', count: 55 },
+                { type: '설비 불량', count: 29 }
             ],
             quality: [
-                { type: '다수 불만족 (11건↑)', count: 120, color: '#e07070' },
-                { type: '일부 불만족 (1~10건)', count: 98, color: '#e89050' },
-                { type: '만족', count: 8, color: '#22a366' }
+                { type: '다수 불만족 (11건↑)', count: 136, color: '#e07070' },
+                { type: '일부 불만족 (1~10건)', count: 115, color: '#e89050' },
+                { type: '만족', count: 10, color: '#22a366' }
             ],
             majorSpaces: [
-                { space: '거실', count: 181 },
-                { space: '침실1', count: 146 },
-                { space: '침실2', count: 144 },
-                { space: '안방', count: 136 },
-                { space: '욕실1', count: 107 },
-                { space: '욕실2', count: 98 },
-                { space: '주방', count: 66 },
-                { space: '현관', count: 60 },
-                { space: '다용도실', count: 41 },
-                { space: '드레스룸', count: 35 }
+                { space: '거실', count: 207 },
+                { space: '침실1', count: 167 },
+                { space: '침실2', count: 167 },
+                { space: '안방', count: 158 },
+                { space: '욕실1', count: 125 },
+                { space: '욕실2', count: 113 },
+                { space: '주방', count: 77 },
+                { space: '현관', count: 70 },
+                { space: '다용도실', count: 45 },
+                { space: '드레스룸', count: 43 }
             ],
             roomDefects: [
-                { defect: 'PL창호', count: 186 },
-                { defect: '도배', count: 59 },
-                { defect: '목문틀', count: 52 },
-                { defect: '강마루', count: 40 },
-                { defect: '목문짝', count: 33 },
-                { defect: '미장', count: 29 },
-                { defect: '골조', count: 25 },
-                { defect: '외벽도장', count: 21 },
-                { defect: '마루코킹', count: 20 },
-                { defect: '발코니난간대', count: 16 }
+                { defect: 'PL창호', count: 214 },
+                { defect: '도배', count: 68 },
+                { defect: '목문틀', count: 62 },
+                { defect: '강마루', count: 48 },
+                { defect: '목문짝', count: 38 },
+                { defect: '미장', count: 34 },
+                { defect: '골조', count: 27 },
+                { defect: '외벽도장', count: 26 },
+                { defect: '마루코킹', count: 24 },
+                { defect: '걸레받이', count: 20 }
             ],
             byDong: [
-                { dong: '101', responses: 19, initial: 1834, completed: 1121, resubmit: 604, repairRate: 61.1, resubmitRate: 53.9 },
-                { dong: '102', responses: 37, initial: 3642, completed: 2541, resubmit: 944, repairRate: 69.8, resubmitRate: 37.2 },
-                { dong: '103', responses: 27, initial: 2121, completed: 1486, resubmit: 481, repairRate: 70.1, resubmitRate: 32.4 },
-                { dong: '104', responses: 22, initial: 1995, completed: 1355, resubmit: 501, repairRate: 67.9, resubmitRate: 37.0 },
-                { dong: '105', responses: 25, initial: 2561, completed: 1435, resubmit: 756, repairRate: 56.0, resubmitRate: 52.7 },
-                { dong: '106', responses: 26, initial: 2565, completed: 1508, resubmit: 678, repairRate: 58.8, resubmitRate: 45.0 },
-                { dong: '107', responses: 38, initial: 3519, completed: 2449, resubmit: 1113, repairRate: 69.6, resubmitRate: 45.4 },
-                { dong: '108', responses: 32, initial: 2802, completed: 1747, resubmit: 571, repairRate: 62.3, resubmitRate: 32.7 }
+                { dong: '101', responses: 23, initial: 2164, completed: 1402, resubmit: 754, repairRate: 64.8, resubmitRate: 53.8 },
+                { dong: '102', responses: 43, initial: 4042, completed: 2874, resubmit: 1080, repairRate: 71.1, resubmitRate: 37.6 },
+                { dong: '103', responses: 34, initial: 2801, completed: 1948, resubmit: 718, repairRate: 69.5, resubmitRate: 36.9 },
+                { dong: '104', responses: 25, initial: 2255, completed: 1595, resubmit: 611, repairRate: 70.7, resubmitRate: 38.3 },
+                { dong: '105', responses: 27, initial: 2709, completed: 1481, resubmit: 876, repairRate: 54.7, resubmitRate: 59.1 },
+                { dong: '106', responses: 30, initial: 2820, completed: 1685, resubmit: 738, repairRate: 59.8, resubmitRate: 43.8 },
+                { dong: '107', responses: 43, initial: 4025, completed: 2951, resubmit: 1335, repairRate: 73.3, resubmitRate: 45.2 },
+                { dong: '108', responses: 36, initial: 3306, completed: 2027, resubmit: 711, repairRate: 61.3, resubmitRate: 35.1 }
             ],
             wordCloud: [
-                { text: '샷시', value: 81 }, { text: '흔들림', value: 61 }, { text: '욕실', value: 36 },
-                { text: '하자', value: 36 }, { text: '창호', value: 35 }, { text: '불량', value: 32 },
-                { text: '타일', value: 27 }, { text: '세면대', value: 25 }, { text: '마감', value: 25 },
-                { text: '화장실', value: 22 }, { text: '제대로', value: 22 }, { text: '처리', value: 20 },
-                { text: '들뜸', value: 19 }, { text: '창틀', value: 18 }, { text: '보수', value: 17 },
-                { text: '안방', value: 16 }, { text: '입주', value: 15 }, { text: '모든', value: 13 },
-                { text: '문제', value: 12 }, { text: '하부', value: 12 }, { text: '배관', value: 11 },
-                { text: '거실', value: 10 }, { text: '주방', value: 10 }, { text: '다용도실', value: 9 },
-                { text: '침실', value: 9 }, { text: '정확한', value: 9 }, { text: '사전점검', value: 9 },
-                { text: '현관', value: 8 }, { text: '구배불량', value: 8 }, { text: '단열', value: 8 },
-                { text: '창문', value: 8 }, { text: '필요', value: 8 }, { text: '입주전', value: 8 },
-                { text: '빨리', value: 8 }, { text: '도배', value: 7 }, { text: '전체', value: 7 },
+                { text: '샷시', value: 87 }, { text: '흔들림', value: 64 }, { text: '하자', value: 46 },
+                { text: '욕실', value: 43 }, { text: '창호', value: 43 }, { text: '불량', value: 40 },
+                { text: '타일', value: 33 }, { text: '세면대', value: 27 }, { text: '마감', value: 27 },
+                { text: '제대로', value: 25 }, { text: '화장실', value: 24 }, { text: '들뜸', value: 23 },
+                { text: '처리', value: 21 }, { text: '창틀', value: 19 }, { text: '입주', value: 19 },
+                { text: '안방', value: 18 }, { text: '보수', value: 18 }, { text: '주방', value: 15 },
+                { text: '침실', value: 14 }, { text: '모든', value: 13 }, { text: '배관', value: 12 },
+                { text: '문제', value: 12 }, { text: '하부', value: 12 }, { text: '거실', value: 11 },
+                { text: '수전', value: 11 }, { text: '하자보수', value: 11 }, { text: '무조건', value: 10 },
+                { text: '강마루', value: 9 }, { text: '다용도실', value: 9 }, { text: '문틀', value: 9 },
+                { text: '정확한', value: 9 }, { text: '사전점검', value: 9 }, { text: '빠른', value: 9 },
+                { text: '도배', value: 8 }, { text: '현관', value: 8 }, { text: '구배불량', value: 8 },
+                { text: '단열', value: 8 }, { text: '완료', value: 8 }, { text: '창문', value: 8 },
+                { text: '수리', value: 8 }, { text: '제발', value: 8 }, { text: '입주전', value: 8 },
+                { text: '빨리', value: 8 }, { text: '다시', value: 8 }, { text: '전체', value: 7 },
                 { text: '안됨', value: 7 }, { text: '샷시흔들림', value: 7 }, { text: '구배', value: 7 },
-                { text: '문틀', value: 7 }, { text: '완료', value: 7 }, { text: '수전', value: 7 },
-                { text: '시공', value: 7 }, { text: '제발', value: 7 }, { text: '빠른', value: 7 },
-                { text: '다시', value: 7 }, { text: '강마루', value: 6 }, { text: '마감불량', value: 6 },
-                { text: '아일랜드장', value: 6 }, { text: '기만', value: 5 }, { text: '누수', value: 5 },
-                { text: '결로', value: 5 }, { text: '곰팡이', value: 4 }, { text: '대충', value: 4 }
+                { text: '기만', value: 6 }, { text: '누수', value: 6 }, { text: '결로', value: 5 },
+                { text: '곰팡이', value: 5 }, { text: '대충', value: 5 }, { text: '아일랜드장', value: 5 }
             ],
             comments: [
                 { severity: '매우 심각', text: '하자 접수 후에도 하자보수가 <strong>대충 이루어집니다</strong>. 완료라고 해서 확인해도 교체나 보수가 아닌 <strong>대충 일을 끝내기 위한 마무리 작업</strong>처럼 보입니다.' },
@@ -1233,9 +1233,9 @@
             data: {
                 labels: ['하자 처리 현황'],
                 datasets: [
-                    { label: '미보수 (7,397건)', data: [7397], backgroundColor: '#e07070' },
-                    { label: '재접수 (5,648건)', data: [5648], backgroundColor: '#e89050' },
-                    { label: '정상완료 (7,994건)', data: [7994], backgroundColor: '#22a366' }
+                    { label: '미보수 (8,159건)', data: [8159], backgroundColor: '#e07070' },
+                    { label: '재접수 (6,823건)', data: [6823], backgroundColor: '#e89050' },
+                    { label: '정상완료 (9,140건)', data: [9140], backgroundColor: '#22a366' }
                 ]
             },
             options: {
